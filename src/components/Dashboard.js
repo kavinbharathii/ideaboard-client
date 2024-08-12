@@ -1,33 +1,52 @@
 
 import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
 import axios from 'axios';
+import styles from './Dashboard.module.css';
 
 const Dashboard = () => {
 
-    // const [cookie, setCookie] = useState('');
+    const [attendanceRecords, setAttendanceRecords] = useState([]);
 
-    // useEffect(async () => {
-        // const cookieValue = await Cookies.get('userid');
-        // console.log(cookieValue)
-        // console.log(cookieValue.userid)
-        // setCookie(cookieValue);
-    // }, [])
+    // get all the attendance posts from the guards
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await axios.get('http://localhost:5000/admin/guards/all');
 
-    const handleClick = () => {
-        // const response = await axios.get('http://localhost:5000/dashboard');
-        // console.log(response);
-        navigator.geolocation.getCurrentPosition((position) => {
-            console.log(position.coords.latitude);
-            console.log(position.coords.longitude);
-            console.log(typeof position.coords.latitude);
-            // return { lat: position.coords.latitude, long: position.coords.longitude };
-        });
-    }
+            try {
+                const attendanceRecords = response.data.attendanceRecords;
+                setAttendanceRecords(attendanceRecords);
+                console.log(attendanceRecords);
+            } catch (error) {
+                console.log("Error fetching data");
+            }
+        }
+        fetchData();
+    }, []);
 
     return (
         <div>
-            <h1 onClick={handleClick}>Dashboard</h1>
+            <h1>Dashboard</h1>
+            <div className={styles.container}>
+                <h3>Username</h3>
+                <h3>Latitude</h3>
+                <h3>Longitude</h3>
+                <h3>Timestamp</h3>
+                <h3>Selfie</h3>
+            </div>
+            {
+                attendanceRecords.map((record, index) => {
+                    const selfieUrl = record.selfie.split('\\')[1];
+                    return (
+                        <div key={index} className={styles.container}>
+                            <h3>{record.user}</h3>
+                            <p>{record.latitude}</p>
+                            <p>{record.longitude}</p>
+                            <p>{Date(record.timestamp).split(' ').splice(1, 4).join(' ')}</p>
+                            <img src={`http://localhost:5000/${selfieUrl}`} alt="attendance" width="200" />
+                        </div>
+                    );
+                })
+            }
         </div>
     );
 }

@@ -1,25 +1,26 @@
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function PostAttendance() {
     const [username, setUsername] = useState('');
-    const [latitude, setLatitude] = useState('');
-    const [longitude, setLongitude] = useState('');
+    const [latitude, setLatitude] = useState(0);
+    const [longitude, setLongitude] = useState(0);
     const [file, setFile] = useState('');
-
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleAttendance = async (e) => {
-        e.preventDefault();
-
-        await navigator.geolocation.getCurrentPosition((position) => {
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition((position) => {
             setLatitude(position.coords.latitude);
             setLongitude(position.coords.longitude);
         });
+    }, []);
+
+    const handleAttendance = async (e) => {
+        e.preventDefault();
         const formData = new FormData();
         formData.append('file', file);
         formData.append('username', username);
@@ -29,12 +30,12 @@ function PostAttendance() {
         try {
             const response = await axios.post('http://localhost:5000/attendance/upload', formData);
 
-            if (response.status === 200) {
+            if (response.status === 201) {
                 console.log('Post successful');
-                navigate('/dashboard');
+                navigate('/');
             }
         } catch (error) {
-            setError(`Post failed`);
+            setError(`Failed to post attendance. Please try again.`);
             console.error('Post error', error.message);
         }
     };
