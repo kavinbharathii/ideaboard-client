@@ -2,7 +2,8 @@
 // now login page
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import styles from './Form.module.css';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -14,13 +15,17 @@ function Login() {
         e.preventDefault();
 
         try {
+            // using `withCredentials: true` to send cookies with the request
+            // if not used, the server will not be able to set the session cookie.
+            // for more info, check https://jakearchibald.com/2021/cors/
+
             const response = await axios.post('http://localhost:5000/auth/login', {
                 username,
                 password,
             }, { 
                 withCredentials: true
             });
-
+            
             if (response.status === 200) {
                 console.log('Login successful');
                 navigate('/');
@@ -33,30 +38,33 @@ function Login() {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: 'auto' }}>
-            <h1>Login</h1>
-            <form onSubmit={handleLogin}>
+        <div className={styles.container} style={{ maxWidth: '400px', margin: 'auto' }}>
+            <form className={styles.form} onSubmit={handleLogin}>
+                <h1>Login</h1>
                 <div>
-                    <label>Username</label>
                     <input
+                        className={styles.inputBox}
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        placeholder="Enter username"
+                        placeholder="Your username"
                         required
                     />
                 </div>
                 <div>
-                    <label>Password</label>
                     <input
+                        className={styles.inputBox}
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter password"
+                        placeholder="Your password"
                         required
                     />
                 </div>
-                <button type="submit">Login</button>
+                <div>
+                    <button className={styles.button} type="submit">Login</button>
+                    <p className={styles.subText}>Don't have an account? <Link className={styles.registerLink} to="/register">Register Here</Link></p>
+                </div>
             </form>
             {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>

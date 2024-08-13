@@ -15,6 +15,7 @@ const Dashboard = () => {
                 withCredentials: true,
             });
 
+            // see if the req user is an admin
             if (response.status === 200) {
                 const attendanceRecords = response.data.attendanceRecords;
                 setAttendanceRecords(attendanceRecords);

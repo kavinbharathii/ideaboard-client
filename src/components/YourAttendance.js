@@ -2,13 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './Dashboard.module.css';
-import { useNavigate } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 
 const YourAttendance = () => {
 
     const [attendanceRecords, setAttendanceRecords] = useState([]);
     const [userName, setUserName] = useState('');
-    const navigate = useNavigate();
 
     // get all the attendance posts from the guards
     useEffect(() => {
@@ -18,7 +17,7 @@ const YourAttendance = () => {
             });
 
             if (response.status === 401) {
-                navigate('/login');
+                redirect('/login');
             } else {
                 const fetchedAttendanceRecords = response.data.attendanceRecords;
                 const fetchedUserName = response.data.username;
@@ -55,7 +54,7 @@ const YourAttendance = () => {
                                         <p>{record.latitude}</p>
                                         <p>{record.longitude}</p>
                                         <p>{Date(record.timestamp).split(' ').splice(1, 4).join(' ')}</p>
-                                        <img src={`http://localhost:5000/${selfieUrl}`} alt="attendance" width="200" />
+                                        <img src={`http://localhost:5000/auth/getimage/${selfieUrl}`} alt="attendance" width="200" />
                                     </div>
                                 );
                             })

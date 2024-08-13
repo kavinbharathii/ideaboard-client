@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import styles from './Form.module.css';
+import { Link } from 'react-router-dom';
 
 function Register() {
     const [username, setUsername] = useState('');
@@ -41,50 +43,54 @@ function Register() {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: 'auto' }}>
-            <h1>Register</h1>
-            <form onSubmit={handleRegister}>
+        <div className={styles.container} style={{ maxWidth: '400px', margin: 'auto' }}>
+            <form className={styles.form} onSubmit={handleRegister}>
+                <h1>Register</h1>
                 <div>
-                    <label>Username</label>
                     <input
+                        className={styles.inputBox}
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        placeholder="Enter username"
+                        placeholder="Your username"
                         required
-                    />
+                        />
                 </div>
                 <div>
-                    <label>Password</label>
                     <input
+                        className={styles.inputBox}
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter password"
+                        placeholder="Your password"
                         required
-                    />
+                        />
                 </div>
                 <div>
-                    <label>Confirm Password</label>
                     <input
+                        className={styles.inputBox}
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Confirm password"
                         required
-                    />
+                        />
                 </div>
                 <div>
-                    <label>Phone Number</label>
                     <input
+                        className={styles.inputBox}
                         type="text"
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
-                        placeholder="Enter phone number"
+                        placeholder="Your phone number"
                         required
                     />
                 </div>
-                <button type="submit">Register</button>
+                <div>
+                    <button className={styles.button} type="submit">Register</button>
+                    <p className={styles.subText}>Already an user? <Link className={styles.redirectLink} to="/login">Login Here</Link></p>
+                </div>
+
             </form>
             {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
