@@ -14,7 +14,7 @@ function Login() {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:5000/login', {
+            const response = await axios.post('http://localhost:5000/auth/login', {
                 username,
                 password,
             }, { 
@@ -23,11 +23,12 @@ function Login() {
 
             if (response.status === 200) {
                 console.log('Login successful');
-                navigate('/dashboard');
+                navigate('/');
             }
         } catch (error) {
             setError(`Login failed. Please try again.`);
             console.error('Login error:', error.response?.message);
+            navigate('/login')
         }
     };
 

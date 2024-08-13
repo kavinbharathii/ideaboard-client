@@ -23,7 +23,6 @@ function PostAttendance() {
         e.preventDefault();
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('username', username);
         formData.append('latitude', latitude);
         formData.append('longitude', longitude);
 
@@ -33,6 +32,12 @@ function PostAttendance() {
             if (response.status === 201) {
                 console.log('Post successful');
                 navigate('/');
+            } else if (response.status === 401) {
+                navigate('/login');
+            } else if (response.status === 400) {
+                setError(`Failed to post attendance, since you posted within the last hour`);
+            } else {
+                setError(`Failed to post attendance. Internal server error, please try again later.`);
             }
         } catch (error) {
             setError(`Failed to post attendance. Please try again.`);

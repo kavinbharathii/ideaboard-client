@@ -21,11 +21,13 @@ function Register() {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/register', {
+            const response = await axios.post('http://localhost:5000/auth/register', {
                 username,
                 password,
                 isGuard: true,
                 phoneNumber: phoneNumber,
+            }, {
+                withCredentials: true,
             });
 
             if (response.status === 201) {

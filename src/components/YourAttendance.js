@@ -2,29 +2,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './Dashboard.module.css';
+import { useNavigate } from 'react-router-dom';
 
-const Dashboard = () => {
+const YourAttendance = () => {
 
     const [attendanceRecords, setAttendanceRecords] = useState([]);
-    const [adminAccess, setAdminAccess] = useState(false);
+    const [userName, setUserName] = useState('');
+    const navigate = useNavigate();
 
     // get all the attendance posts from the guards
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get('http://localhost:5000/user/admin/all', {
+            const response = await axios.get('http://localhost:5000/user/guards/myattendance', {
                 withCredentials: true,
             });
 
-            if (response.status === 200) {
-                const attendanceRecords = response.data.attendanceRecords;
-                setAttendanceRecords(attendanceRecords);
-                setAdminAccess(true);
-                console.log(attendanceRecords);
-            } else if (response.status === 401) {
-                console.log("Admin access denied");
-                setAdminAccess(false)
+            if (response.status === 401) {
+                navigate('/login');
             } else {
-                console.log("Internal server error");
+                const fetchedAttendanceRecords = response.data.attendanceRecords;
+                const fetchedUserName = response.data.username;
+                setAttendanceRecords(fetchedAttendanceRecords);
+                setUserName(fetchedUserName);
+                console.log(fetchedUserName);
             }
         }
         fetchData();
@@ -33,11 +33,12 @@ const Dashboard = () => {
     return (
         <div>
             {
-                adminAccess === false ? (
-                    <h1>Admin access denied</h1>
+                attendanceRecords.length === 0 ? (
+                    <h1>No attendance records found for user {userName}</h1>
                 ) : (
-                    <>
-                        <h1>Dashboard</h1>
+                    <div>
+
+                        <h1>Hello, {userName}</h1>
                         <div className={styles.container}>
                             <h3>Username</h3>
                             <h3>Latitude</h3>
@@ -54,16 +55,17 @@ const Dashboard = () => {
                                         <p>{record.latitude}</p>
                                         <p>{record.longitude}</p>
                                         <p>{Date(record.timestamp).split(' ').splice(1, 4).join(' ')}</p>
-                                        <img src={`http://localhost:5000/auth/getimage/${selfieUrl}`} alt="attendance" width="200" />
+                                        <img src={`http://localhost:5000/${selfieUrl}`} alt="attendance" width="200" />
                                     </div>
                                 );
                             })
                         }
-                    </>
+                    </div>
+
                 )
             }
         </div>
-    )
+    );
 }
 
-export default Dashboard;
+export default YourAttendance;
